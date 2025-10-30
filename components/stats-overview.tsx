@@ -11,8 +11,6 @@ interface StatsOverviewProps {
 export function StatsOverview({ reports }: StatsOverviewProps) {
   const { t } = useLanguage()
   const totalReports = reports.length
-  const newReports = reports.filter((r) => r.status === "new").length
-  const inProgress = reports.filter((r) => r.status === "in-progress").length
   const completed = reports.filter((r) => r.status === "completed").length
 
   const stats = [
@@ -25,22 +23,6 @@ export function StatsOverview({ reports }: StatsOverviewProps) {
       textColor: "text-blue-700",
     },
     {
-      label: t.newReports,
-      value: newReports,
-      icon: "🆕",
-      gradient: "from-teal-500 to-teal-600",
-      iconBg: "bg-teal-100",
-      textColor: "text-teal-700",
-    },
-    {
-      label: t.inProgress,
-      value: inProgress,
-      icon: "⚙️",
-      gradient: "from-amber-500 to-amber-600",
-      iconBg: "bg-amber-100",
-      textColor: "text-amber-700",
-    },
-    {
       label: t.completed,
       value: completed,
       icon: "✅",
@@ -51,7 +33,7 @@ export function StatsOverview({ reports }: StatsOverviewProps) {
   ]
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    <div className="grid grid-cols-2 gap-4 sm:gap-6">
       {stats.map((stat) => (
         <Card
           key={stat.label}
@@ -61,7 +43,7 @@ export function StatsOverview({ reports }: StatsOverviewProps) {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex-1">
                 <div
-                  className={`text-3xl sm:text-4xl font-bold mb-1 bg-gradient-to-br ${stat.gradient} bg-clip-text text-transparent`}
+                  className={`text-3xl sm:text-4xl font-bold mb-1 bg-linear-to-br ${stat.gradient} bg-clip-text text-transparent`}
                 >
                   {stat.value}
                 </div>

@@ -19,11 +19,9 @@ export default function DashboardPage() {
   const [viewMode, setViewMode] = useState<"list" | "map">("list")
   const [filters, setFilters] = useState<{
     pollutionTypes: PollutionType[]
-    statuses: ReportStatus[]
     sources: ReportSource[]
   }>({
     pollutionTypes: [],
-    statuses: [],
     sources: [],
   })
 
@@ -52,10 +50,6 @@ export default function DashboardPage() {
 
     if (filters.pollutionTypes.length > 0) {
       filtered = filtered.filter((r) => filters.pollutionTypes.includes(r.pollutionType))
-    }
-
-    if (filters.statuses.length > 0) {
-      filtered = filtered.filter((r) => filters.statuses.includes(r.status))
     }
 
     if (filters.sources.length > 0) {
@@ -192,7 +186,7 @@ export default function DashboardPage() {
       <footer className="bg-card border-t border-border mt-12 sm:mt-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-2">
-            <span className="text-xl sm:text-2xl flex-shrink-0">🌊</span>
+            <span className="text-xl sm:text-2xl shrink-0">🌊</span>
             <p className="text-xs sm:text-sm font-medium text-foreground text-center sm:text-left">{t.systemDescription}</p>
           </div>
           <p className="text-xs text-muted-foreground">{t.developedFor}</p>

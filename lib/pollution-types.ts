@@ -52,10 +52,6 @@ export const statusConfig = {
     label: "Новый",
     color: "bg-blue-500 text-white border-blue-600",
   },
-  "in-progress": {
-    label: "В работе",
-    color: "bg-yellow-500 text-white border-yellow-600",
-  },
   completed: {
     label: "Выполнено",
     color: "bg-green-500 text-white border-green-600",

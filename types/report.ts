@@ -11,7 +11,6 @@ export type PollutionType =
 // Статус отчета
 export type ReportStatus =
   | "new" // Новый отчет
-  | "in-progress" // В процессе уборки
   | "completed" // Убрано
 
 // Источник отчета

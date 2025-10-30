@@ -8,18 +8,14 @@ export interface Translations {
 
     // Stats
     totalReports: string
-    newReports: string
-    inProgress: string
     completed: string
 
     // Filters
     filters: string
     pollutionType: string
-    status: string
     source: string
     resetFilters: string
     allTypes: string
-    allStatuses: string
     allSources: string
     selected: string
 
@@ -37,7 +33,6 @@ export interface Translations {
     // Statuses
     statuses: {
         new: string
-        "in-progress": string
         completed: string
     }
 
@@ -49,11 +44,9 @@ export interface Translations {
 
     // Report Card
     openOnMap: string
-    takeToWork: string
     markCompleted: string
     cleanupCompleted: string
     reportedBy: string
-    assignedTo: string
 
     // Reports List
     reportsTitle: string
@@ -80,17 +73,13 @@ export const translations: Record<Language, Translations> = {
         refresh: "Обновить",
 
         totalReports: "Всего отчетов",
-        newReports: "Новые",
-        inProgress: "В работе",
         completed: "Выполнено",
 
         filters: "Фильтры",
         pollutionType: "Тип загрязнения",
-        status: "Статус",
         source: "Источник",
         resetFilters: "Сбросить фильтры",
         allTypes: "Все типы",
-        allStatuses: "Все статусы",
         allSources: "Все источники",
         selected: "выбрано",
 
@@ -106,7 +95,6 @@ export const translations: Record<Language, Translations> = {
 
         statuses: {
             new: "Новый",
-            "in-progress": "В работе",
             completed: "Выполнено",
         },
 
@@ -116,11 +104,9 @@ export const translations: Record<Language, Translations> = {
         },
 
         openOnMap: "Открыть на карте",
-        takeToWork: "Взять в работу",
         markCompleted: "Отметить выполненным",
         cleanupCompleted: "✓ Уборка завершена",
         reportedBy: "Сообщил",
-        assignedTo: "Назначен",
 
         reportsTitle: "Отчеты о загрязнениях",
         noReportsFound: "Отчетов не найдено",
@@ -142,17 +128,13 @@ export const translations: Record<Language, Translations> = {
         refresh: "Refresh",
 
         totalReports: "Total Reports",
-        newReports: "New",
-        inProgress: "In Progress",
         completed: "Completed",
 
         filters: "Filters",
         pollutionType: "Pollution Type",
-        status: "Status",
         source: "Source",
         resetFilters: "Reset Filters",
         allTypes: "All types",
-        allStatuses: "All statuses",
         allSources: "All sources",
         selected: "selected",
 
@@ -168,7 +150,6 @@ export const translations: Record<Language, Translations> = {
 
         statuses: {
             new: "New",
-            "in-progress": "In Progress",
             completed: "Completed",
         },
 
@@ -178,11 +159,9 @@ export const translations: Record<Language, Translations> = {
         },
 
         openOnMap: "Open on Map",
-        takeToWork: "Take to Work",
         markCompleted: "Mark as Completed",
         cleanupCompleted: "✓ Cleanup Completed",
         reportedBy: "Reported by",
-        assignedTo: "Assigned to",
 
         reportsTitle: "Pollution Reports",
         noReportsFound: "No Reports Found",
@@ -204,17 +183,13 @@ export const translations: Record<Language, Translations> = {
         refresh: "Yenilə",
 
         totalReports: "Ümumi Hesabatlar",
-        newReports: "Yeni",
-        inProgress: "İşdə",
         completed: "Tamamlandı",
 
         filters: "Filtrlər",
         pollutionType: "Çirklənmə Növü",
-        status: "Status",
         source: "Mənbə",
         resetFilters: "Filtrləri Sıfırla",
         allTypes: "Bütün növlər",
-        allStatuses: "Bütün statuslar",
         allSources: "Bütün mənbələr",
         selected: "seçildi",
 
@@ -230,7 +205,6 @@ export const translations: Record<Language, Translations> = {
 
         statuses: {
             new: "Yeni",
-            "in-progress": "İşdə",
             completed: "Tamamlandı",
         },
 
@@ -240,11 +214,9 @@ export const translations: Record<Language, Translations> = {
         },
 
         openOnMap: "Xəritədə Aç",
-        takeToWork: "İşə Götür",
         markCompleted: "Tamamlandı kimi İşarələ",
         cleanupCompleted: "✓ Təmizlik Tamamlandı",
         reportedBy: "Bildirən",
-        assignedTo: "Təyin edilib",
 
         reportsTitle: "Çirklənmə Hesabatları",
         noReportsFound: "Hesabat Tapılmadı",
@@ -266,17 +238,13 @@ export const translations: Record<Language, Translations> = {
         refresh: "Жаңарту",
 
         totalReports: "Барлық Есептер",
-        newReports: "Жаңа",
-        inProgress: "Жұмыста",
         completed: "Аяқталды",
 
         filters: "Сүзгілер",
         pollutionType: "Ластану Түрі",
-        status: "Күй",
         source: "Көз",
         resetFilters: "Сүзгілерді Қалпына Келтіру",
         allTypes: "Барлық түрлер",
-        allStatuses: "Барлық күйлер",
         allSources: "Барлық көздер",
         selected: "таңдалды",
 
@@ -292,7 +260,6 @@ export const translations: Record<Language, Translations> = {
 
         statuses: {
             new: "Жаңа",
-            "in-progress": "Жұмыста",
             completed: "Аяқталды",
         },
 
@@ -302,11 +269,9 @@ export const translations: Record<Language, Translations> = {
         },
 
         openOnMap: "Картада Ашу",
-        takeToWork: "Жұмысқа Алу",
         markCompleted: "Орындалды деп Белгілеу",
         cleanupCompleted: "✓ Тазалау Аяқталды",
         reportedBy: "Хабарлаған",
-        assignedTo: "Тағайындалған",
 
         reportsTitle: "Ластану Есептері",
         noReportsFound: "Есептер Табылмады",

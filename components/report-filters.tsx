@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import type { PollutionType, ReportStatus, ReportSource } from "@/types/report"
-import { pollutionTypeConfig, statusConfig, sourceConfig } from "@/lib/pollution-types"
+import type { PollutionType, ReportSource } from "@/types/report"
+import { pollutionTypeConfig, sourceConfig } from "@/lib/pollution-types"
 import { useLanguage } from "@/contexts/language-context"
 import { Button } from "@/components/ui/button"
 import {
@@ -18,7 +18,6 @@ import { ChevronDown } from "lucide-react"
 interface ReportFiltersProps {
   onFilterChange: (filters: {
     pollutionTypes: PollutionType[]
-    statuses: ReportStatus[]
     sources: ReportSource[]
   }) => void
 }
@@ -26,21 +25,12 @@ interface ReportFiltersProps {
 export function ReportFilters({ onFilterChange }: ReportFiltersProps) {
   const { t } = useLanguage()
   const [selectedTypes, setSelectedTypes] = useState<PollutionType[]>([])
-  const [selectedStatuses, setSelectedStatuses] = useState<ReportStatus[]>([])
   const [selectedSources, setSelectedSources] = useState<ReportSource[]>([])
 
   const toggleType = (type: PollutionType) => {
     const newTypes = selectedTypes.includes(type) ? selectedTypes.filter((t) => t !== type) : [...selectedTypes, type]
     setSelectedTypes(newTypes)
-    onFilterChange({ pollutionTypes: newTypes, statuses: selectedStatuses, sources: selectedSources })
-  }
-
-  const toggleStatus = (status: ReportStatus) => {
-    const newStatuses = selectedStatuses.includes(status)
-      ? selectedStatuses.filter((s) => s !== status)
-      : [...selectedStatuses, status]
-    setSelectedStatuses(newStatuses)
-    onFilterChange({ pollutionTypes: selectedTypes, statuses: newStatuses, sources: selectedSources })
+    onFilterChange({ pollutionTypes: newTypes, sources: selectedSources })
   }
 
   const toggleSource = (source: ReportSource) => {
@@ -48,17 +38,16 @@ export function ReportFilters({ onFilterChange }: ReportFiltersProps) {
       ? selectedSources.filter((s) => s !== source)
       : [...selectedSources, source]
     setSelectedSources(newSources)
-    onFilterChange({ pollutionTypes: selectedTypes, statuses: selectedStatuses, sources: newSources })
+    onFilterChange({ pollutionTypes: selectedTypes, sources: newSources })
   }
 
   const clearFilters = () => {
     setSelectedTypes([])
-    setSelectedStatuses([])
     setSelectedSources([])
-    onFilterChange({ pollutionTypes: [], statuses: [], sources: [] })
+    onFilterChange({ pollutionTypes: [], sources: [] })
   }
 
-  const hasActiveFilters = selectedTypes.length > 0 || selectedStatuses.length > 0 || selectedSources.length > 0
+  const hasActiveFilters = selectedTypes.length > 0 || selectedSources.length > 0
 
   return (
     <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-4 shadow-card">
@@ -114,39 +103,6 @@ export function ReportFilters({ onFilterChange }: ReportFiltersProps) {
                 </DropdownMenuCheckboxItem>
               )
             })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* Статус */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="w-full sm:flex-1 justify-between font-semibold"
-            >
-              <span className="flex items-center gap-2">
-                📊 {t.status}
-                {selectedStatuses.length > 0 && (
-                  <span className="ml-1 px-2 py-0.5 bg-primary text-primary-foreground rounded-full text-xs">
-                    {selectedStatuses.length}
-                  </span>
-                )}
-              </span>
-              <ChevronDown className="h-4 w-4 opacity-50" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="start">
-            <DropdownMenuLabel>{t.status}</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {(Object.keys(statusConfig) as ReportStatus[]).map((status) => (
-              <DropdownMenuCheckboxItem
-                key={status}
-                checked={selectedStatuses.includes(status)}
-                onCheckedChange={() => toggleStatus(status)}
-              >
-                {t.statuses[status]}
-              </DropdownMenuCheckboxItem>
-            ))}
           </DropdownMenuContent>
         </DropdownMenu>
 

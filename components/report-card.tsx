@@ -15,13 +15,10 @@ interface ReportCardProps {
 export function ReportCard({ report, onStatusChange }: ReportCardProps) {
   const { t } = useLanguage()
   const pollutionConfig = pollutionTypeConfig[report.pollutionType]
-  const statusInfo = statusConfig[report.status]
   const sourceInfo = sourceConfig[report.source]
 
   const handleTakeAction = () => {
     if (report.status === "new") {
-      onStatusChange?.(report.id, "in-progress")
-    } else if (report.status === "in-progress") {
       onStatusChange?.(report.id, "completed")
     }
   }
@@ -40,15 +37,11 @@ export function ReportCard({ report, onStatusChange }: ReportCardProps) {
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
 
-        {/* Floating Badges */}
-        <div className="absolute top-3 left-3 right-3 flex items-start justify-between gap-2 z-10">
+        {/* Floating Badge */}
+        <div className="absolute top-3 left-3 right-3 flex items-start justify-start gap-2 z-10">
           <div className={`px-3 py-1.5 rounded-full text-xs font-bold backdrop-blur-xl ${pollutionConfig.color} shadow-lg border border-white/30`}>
             <span className="mr-1">{pollutionConfig.icon}</span>
             {t.pollutionTypes[report.pollutionType]}
-          </div>
-
-          <div className={`px-3 py-1.5 rounded-full text-xs font-bold backdrop-blur-xl ${statusInfo.color} shadow-lg border border-white/30`}>
-            {t.statuses[report.status]}
           </div>
         </div>
 
@@ -97,20 +90,12 @@ export function ReportCard({ report, onStatusChange }: ReportCardProps) {
 
         {/* People - Fixed height */}
         <div className="h-8 mb-3 flex items-center">
-          {(report.reportedBy || report.assignedTo) && (
+          {report.reportedBy && (
             <div className="flex flex-wrap gap-2 text-xs">
-              {report.reportedBy && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-accent/50 rounded-full border border-border/50">
-                  <span className="text-muted-foreground">👤</span>
-                  <span className="font-medium text-foreground truncate max-w-[120px]">{report.reportedBy}</span>
-                </div>
-              )}
-              {report.assignedTo && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-full border border-teal-500/30 font-semibold">
-                  <span>✓</span>
-                  <span className="truncate max-w-[120px]">{report.assignedTo}</span>
-                </div>
-              )}
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-accent/50 rounded-full border border-border/50">
+                <span className="text-muted-foreground">👤</span>
+                <span className="font-medium text-foreground truncate max-w-[120px]">{report.reportedBy}</span>
+              </div>
             </div>
           )}
         </div>
@@ -118,16 +103,6 @@ export function ReportCard({ report, onStatusChange }: ReportCardProps) {
         {/* Action - Always at bottom */}
         <div className="mt-auto">
           {report.status === "new" && (
-            <Button
-              onClick={handleTakeAction}
-              className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold shadow-md hover:shadow-lg transition-all"
-              size="lg"
-            >
-              <span className="mr-2">🤝</span>
-              {t.takeToWork}
-            </Button>
-          )}
-          {report.status === "in-progress" && (
             <Button
               onClick={handleTakeAction}
               className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold shadow-md hover:shadow-lg transition-all"

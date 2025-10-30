@@ -87,10 +87,10 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <div className="text-center">
-          <div className="text-5xl mb-4 animate-bounce">🌊</div>
-          <div className="text-lg font-medium text-foreground">{t.loadingReports}</div>
+          <div className="text-4xl sm:text-5xl mb-4 animate-bounce">🌊</div>
+          <div className="text-base sm:text-lg font-medium text-foreground">{t.loadingReports}</div>
         </div>
       </div>
     )
@@ -99,23 +99,27 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background">
       <header className="gradient-header sticky top-0 z-50 shadow-md">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="text-4xl sm:text-5xl">🌊</div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-white">{t.appName}</h1>
-                <p className="text-xs sm:text-sm text-white/90 font-medium">{t.volunteerPanel}</p>
+        <div className="container mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 lg:py-4">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+              <div className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl shrink-0">🌊</div>
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-lg lg:text-2xl xl:text-3xl font-bold text-white truncate">
+                  {t.appName}
+                </h1>
+                <p className="text-[10px] sm:text-xs lg:text-sm text-white/90 font-medium truncate hidden xs:block">
+                  {t.volunteerPanel}
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               <LanguageSelector />
               <Button
                 onClick={loadReports}
-                className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm transition-all duration-200 px-4 sm:px-6 font-semibold shadow-lg"
+                className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm transition-all duration-200 px-2.5 sm:px-3 lg:px-4 xl:px-6 font-semibold shadow-lg h-9 sm:h-10"
               >
-                <span className="mr-2">🔄</span>
-                <span className="hidden sm:inline">{t.refresh}</span>
+                <span className="text-lg sm:text-xl">🔄</span>
+                <span className="hidden xl:inline ml-2">{t.refresh}</span>
               </Button>
             </div>
           </div>
@@ -137,31 +141,31 @@ export default function DashboardPage() {
           {/* Reports List */}
           <section>
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2 sm:gap-3">
                 {t.reportsTitle}
-                <span className="text-sm sm:text-base font-bold px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-primary text-primary-foreground shadow-sm">
+                <span className="text-sm sm:text-base font-bold px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 rounded-full bg-primary text-primary-foreground shadow-sm">
                   {filteredReports.length}
                 </span>
               </h2>
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full sm:w-auto">
                 <Button
                   onClick={() => setViewMode("list")}
                   variant={viewMode === "list" ? "default" : "outline"}
                   size="sm"
-                  className="font-semibold"
+                  className="font-semibold flex-1 sm:flex-initial"
                 >
-                  <span className="mr-2">📋</span>
-                  {t.listView}
+                  <span className="mr-1 sm:mr-2">📋</span>
+                  <span className="text-xs sm:text-sm">{t.listView}</span>
                 </Button>
                 <Button
                   onClick={() => setViewMode("map")}
                   variant={viewMode === "map" ? "default" : "outline"}
                   size="sm"
-                  className="font-semibold"
+                  className="font-semibold flex-1 sm:flex-initial"
                 >
-                  <span className="mr-2">🗺️</span>
-                  {t.mapView}
+                  <span className="mr-1 sm:mr-2">🗺️</span>
+                  <span className="text-xs sm:text-sm">{t.mapView}</span>
                 </Button>
               </div>
             </div>
@@ -187,9 +191,9 @@ export default function DashboardPage() {
 
       <footer className="bg-card border-t border-border mt-12 sm:mt-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <span className="text-2xl">🌊</span>
-            <p className="text-xs sm:text-sm font-medium text-foreground">{t.systemDescription}</p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-2">
+            <span className="text-xl sm:text-2xl flex-shrink-0">🌊</span>
+            <p className="text-xs sm:text-sm font-medium text-foreground text-center sm:text-left">{t.systemDescription}</p>
           </div>
           <p className="text-xs text-muted-foreground">{t.developedFor}</p>
         </div>

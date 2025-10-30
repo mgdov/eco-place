@@ -3,6 +3,12 @@
 import { useLanguage } from "@/contexts/language-context"
 import type { Language } from "@/lib/i18n/translations"
 import { Button } from "@/components/ui/button"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const languages: { code: Language; label: string; flag: string }[] = [
     { code: "ru", label: "Русский", flag: "🇷🇺" },
@@ -13,27 +19,37 @@ const languages: { code: Language; label: string; flag: string }[] = [
 
 export function LanguageSelector() {
     const { language, setLanguage } = useLanguage()
+    const currentLang = languages.find((lang) => lang.code === language)
 
     return (
-        <div className="flex gap-2">
-            {languages.map((lang) => (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
                 <Button
-                    key={lang.code}
-                    onClick={() => setLanguage(lang.code)}
-                    variant={language === lang.code ? "default" : "outline"}
+                    variant="outline"
                     size="sm"
-                    className={`
-            ${language === lang.code
-                            ? "bg-white text-teal-600 hover:bg-white/90"
-                            : "bg-white/20 hover:bg-white/30 text-white border-white/30"
-                        }
-            backdrop-blur-sm transition-all duration-200 font-semibold shadow-lg px-3 py-1.5 text-xs
-          `}
+                    className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-200 font-semibold shadow-lg px-2.5 sm:px-3 py-1.5 text-xs h-9 sm:h-10"
                 >
-                    <span className="mr-1.5">{lang.flag}</span>
-                    <span className="hidden sm:inline">{lang.label}</span>
+                    <span className="text-base sm:text-lg">{currentLang?.flag}</span>
+                    <span className="ml-1.5 text-xs sm:text-sm hidden xs:inline">
+                        {currentLang?.code.toUpperCase()}
+                    </span>
+                    <span className="ml-1 sm:ml-1.5 hidden sm:inline">▼</span>
                 </Button>
-            ))}
-        </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-44 sm:w-48">
+                {languages.map((lang) => (
+                    <DropdownMenuItem
+                        key={lang.code}
+                        onClick={() => setLanguage(lang.code)}
+                        className={`cursor-pointer ${language === lang.code ? "bg-accent font-semibold" : ""
+                            }`}
+                    >
+                        <span className="mr-2 text-base sm:text-lg">{lang.flag}</span>
+                        <span className="text-sm">{lang.label}</span>
+                        {language === lang.code && <span className="ml-auto text-teal-600 font-bold">✓</span>}
+                    </DropdownMenuItem>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }

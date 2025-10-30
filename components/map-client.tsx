@@ -55,7 +55,7 @@ export default function MapClient({ reports }: MapClientProps) {
     const center: [number, number] = [42.9849, 47.5047]
 
     return (
-        <div className="w-full h-[500px] rounded-xl overflow-hidden border-2 border-border shadow-lg relative z-0">
+        <div className="w-full h-[350px] sm:h-[500px] rounded-xl overflow-hidden border-2 border-border shadow-lg relative z-0">
             <MapContainer center={center} zoom={10} className="w-full h-full" zoomControl={true}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

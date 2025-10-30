@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant xs (@media (min-width: 475px));
 
 :root {
   /* Modern refined color palette for eco-place */

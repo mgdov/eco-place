@@ -5,6 +5,15 @@ import type { PollutionType, ReportStatus, ReportSource } from "@/types/report"
 import { pollutionTypeConfig, statusConfig, sourceConfig } from "@/lib/pollution-types"
 import { useLanguage } from "@/contexts/language-context"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { ChevronDown } from "lucide-react"
 
 interface ReportFiltersProps {
   onFilterChange: (filters: {
@@ -52,7 +61,7 @@ export function ReportFilters({ onFilterChange }: ReportFiltersProps) {
   const hasActiveFilters = selectedTypes.length > 0 || selectedStatuses.length > 0 || selectedSources.length > 0
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-5 sm:space-y-6 shadow-card">
+    <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-4 shadow-card">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <h3 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
           <span className="text-xl sm:text-2xl">🔍</span>
@@ -70,79 +79,113 @@ export function ReportFilters({ onFilterChange }: ReportFiltersProps) {
         )}
       </div>
 
-      <div className="space-y-5">
+      <div className="flex flex-col sm:flex-row gap-3">
         {/* Тип загрязнения */}
-        <div>
-          <h4 className="text-xs sm:text-sm font-bold text-foreground mb-3 uppercase tracking-wider">
-            {t.pollutionType}
-          </h4>
-          <div className="flex flex-wrap gap-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full sm:flex-1 justify-between font-semibold"
+            >
+              <span className="flex items-center gap-2">
+                🏷️ {t.pollutionType}
+                {selectedTypes.length > 0 && (
+                  <span className="ml-1 px-2 py-0.5 bg-primary text-primary-foreground rounded-full text-xs">
+                    {selectedTypes.length}
+                  </span>
+                )}
+              </span>
+              <ChevronDown className="h-4 w-4 opacity-50" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="start">
+            <DropdownMenuLabel>{t.pollutionType}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
             {(Object.keys(pollutionTypeConfig) as PollutionType[]).map((type) => {
               const config = pollutionTypeConfig[type]
-              const isSelected = selectedTypes.includes(type)
               return (
-                <button
+                <DropdownMenuCheckboxItem
                   key={type}
-                  onClick={() => toggleType(type)}
-                  className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold border-2 transition-all duration-200 ${isSelected
-                      ? "bg-primary text-primary-foreground border-primary shadow-md scale-105"
-                      : `${config.color} hover:border-primary/50 hover:scale-105`
-                    }`}
+                  checked={selectedTypes.includes(type)}
+                  onCheckedChange={() => toggleType(type)}
                 >
-                  <span className="mr-1.5">{config.icon}</span>
+                  <span className="mr-2">{config.icon}</span>
                   {t.pollutionTypes[type]}
-                </button>
+                </DropdownMenuCheckboxItem>
               )
             })}
-          </div>
-        </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Статус */}
-        <div>
-          <h4 className="text-xs sm:text-sm font-bold text-foreground mb-3 uppercase tracking-wider">{t.status}</h4>
-          <div className="flex flex-wrap gap-2">
-            {(Object.keys(statusConfig) as ReportStatus[]).map((status) => {
-              const config = statusConfig[status]
-              const isSelected = selectedStatuses.includes(status)
-              return (
-                <button
-                  key={status}
-                  onClick={() => toggleStatus(status)}
-                  className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold border-2 transition-all duration-200 ${isSelected
-                      ? "bg-primary text-primary-foreground border-primary shadow-md scale-105"
-                      : `${config.color} hover:border-primary/50 hover:scale-105`
-                    }`}
-                >
-                  {t.statuses[status]}
-                </button>
-              )
-            })}
-          </div>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full sm:flex-1 justify-between font-semibold"
+            >
+              <span className="flex items-center gap-2">
+                📊 {t.status}
+                {selectedStatuses.length > 0 && (
+                  <span className="ml-1 px-2 py-0.5 bg-primary text-primary-foreground rounded-full text-xs">
+                    {selectedStatuses.length}
+                  </span>
+                )}
+              </span>
+              <ChevronDown className="h-4 w-4 opacity-50" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="start">
+            <DropdownMenuLabel>{t.status}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {(Object.keys(statusConfig) as ReportStatus[]).map((status) => (
+              <DropdownMenuCheckboxItem
+                key={status}
+                checked={selectedStatuses.includes(status)}
+                onCheckedChange={() => toggleStatus(status)}
+              >
+                {t.statuses[status]}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Источник */}
-        <div>
-          <h4 className="text-xs sm:text-sm font-bold text-foreground mb-3 uppercase tracking-wider">{t.source}</h4>
-          <div className="flex flex-wrap gap-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full sm:flex-1 justify-between font-semibold"
+            >
+              <span className="flex items-center gap-2">
+                📱 {t.source}
+                {selectedSources.length > 0 && (
+                  <span className="ml-1 px-2 py-0.5 bg-primary text-primary-foreground rounded-full text-xs">
+                    {selectedSources.length}
+                  </span>
+                )}
+              </span>
+              <ChevronDown className="h-4 w-4 opacity-50" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="start">
+            <DropdownMenuLabel>{t.source}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
             {(Object.keys(sourceConfig) as ReportSource[]).map((source) => {
               const config = sourceConfig[source]
-              const isSelected = selectedSources.includes(source)
               return (
-                <button
+                <DropdownMenuCheckboxItem
                   key={source}
-                  onClick={() => toggleSource(source)}
-                  className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold border-2 transition-all duration-200 ${isSelected
-                      ? "bg-primary text-primary-foreground border-primary shadow-md scale-105"
-                      : "bg-accent text-accent-foreground border-border hover:border-primary/50 hover:scale-105"
-                    }`}
+                  checked={selectedSources.includes(source)}
+                  onCheckedChange={() => toggleSource(source)}
                 >
-                  <span className="mr-1.5">{config.icon}</span>
+                  <span className="mr-2">{config.icon}</span>
                   {t.sources[source]}
-                </button>
+                </DropdownMenuCheckboxItem>
               )
             })}
-          </div>
-        </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   )

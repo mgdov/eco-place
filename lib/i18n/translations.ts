@@ -18,6 +18,10 @@ export interface Translations {
     status: string
     source: string
     resetFilters: string
+    allTypes: string
+    allStatuses: string
+    allSources: string
+    selected: string
 
     // Pollution Types
     pollutionTypes: {
@@ -85,6 +89,10 @@ export const translations: Record<Language, Translations> = {
         status: "Статус",
         source: "Источник",
         resetFilters: "Сбросить фильтры",
+        allTypes: "Все типы",
+        allStatuses: "Все статусы",
+        allSources: "Все источники",
+        selected: "выбрано",
 
         pollutionTypes: {
             "bio-waste": "Биомусор",
@@ -143,6 +151,10 @@ export const translations: Record<Language, Translations> = {
         status: "Status",
         source: "Source",
         resetFilters: "Reset Filters",
+        allTypes: "All types",
+        allStatuses: "All statuses",
+        allSources: "All sources",
+        selected: "selected",
 
         pollutionTypes: {
             "bio-waste": "Bio-waste",
@@ -201,6 +213,10 @@ export const translations: Record<Language, Translations> = {
         status: "Status",
         source: "Mənbə",
         resetFilters: "Filtrləri Sıfırla",
+        allTypes: "Bütün növlər",
+        allStatuses: "Bütün statuslar",
+        allSources: "Bütün mənbələr",
+        selected: "seçildi",
 
         pollutionTypes: {
             "bio-waste": "Bio-tullantı",
@@ -259,6 +275,10 @@ export const translations: Record<Language, Translations> = {
         status: "Күй",
         source: "Көз",
         resetFilters: "Сүзгілерді Қалпына Келтіру",
+        allTypes: "Барлық түрлер",
+        allStatuses: "Барлық күйлер",
+        allSources: "Барлық көздер",
+        selected: "таңдалды",
 
         pollutionTypes: {
             "bio-waste": "Био-қалдық",

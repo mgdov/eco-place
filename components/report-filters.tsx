@@ -108,13 +108,12 @@ export function ReportFilters({ onFilterChange, onCategoryChange }: ReportFilter
             <Button
               variant="outline"
               className="w-full sm:flex-1 justify-between font-semibold"
-              disabled={loadingCategories}
             >
               <span className="flex items-center gap-2">
                 🏷️ {t.pollutionType}
-                {selectedCategoryId && (
+                {selectedTypes.length > 0 && (
                   <span className="ml-1 px-2 py-0.5 bg-primary text-primary-foreground rounded-full text-xs">
-                    1
+                    {selectedTypes.length}
                   </span>
                 )}
               </span>
@@ -124,52 +123,25 @@ export function ReportFilters({ onFilterChange, onCategoryChange }: ReportFilter
           <DropdownMenuContent className="w-56" align="start">
             <DropdownMenuLabel>{t.pollutionType}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {loadingCategories ? (
-              <div className="p-2 space-y-2">
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-8 w-full" />
-              </div>
-            ) : categories.length > 0 ? (
-              categories.map((category) => {
-                const isSelected = selectedCategoryId === category._id
-                return (
-                  <DropdownMenuItem
-                    key={category._id}
-                    onClick={() => toggleCategory(category._id)}
-                    className="cursor-pointer"
-                  >
-                    <div className="flex items-center w-full">
-                      <div className="w-4 h-4 mr-2 flex items-center justify-center">
-                        {isSelected && <Check className="w-4 h-4" />}
-                      </div>
-                      <span>{category.name}</span>
+            {(Object.keys(pollutionTypeConfig) as PollutionType[]).map((type) => {
+              const config = pollutionTypeConfig[type]
+              const isSelected = selectedTypes.includes(type)
+              return (
+                <DropdownMenuItem
+                  key={type}
+                  onClick={() => toggleType(type)}
+                  className="cursor-pointer"
+                >
+                  <div className="flex items-center w-full">
+                    <div className="w-4 h-4 mr-2 flex items-center justify-center">
+                      {isSelected && <Check className="w-4 h-4" />}
                     </div>
-                  </DropdownMenuItem>
-                )
-              })
-            ) : (
-              (Object.keys(pollutionTypeConfig) as PollutionType[]).map((type) => {
-                const config = pollutionTypeConfig[type]
-                const isSelected = selectedTypes.includes(type)
-                return (
-                  <DropdownMenuItem
-                    key={type}
-                    onClick={() => toggleType(type)}
-                    className="cursor-pointer"
-                  >
-                    <div className="flex items-center w-full">
-                      <div className="w-4 h-4 mr-2 flex items-center justify-center">
-                        {isSelected && <Check className="w-4 h-4" />}
-                      </div>
-                      <span className="mr-2">{config.icon}</span>
-                      <span>{t.pollutionTypes[type]}</span>
-                    </div>
-                  </DropdownMenuItem>
-                )
-              })
-            )}
+                    <span className="mr-2">{config.icon}</span>
+                    <span>{t.pollutionTypes[type]}</span>
+                  </div>
+                </DropdownMenuItem>
+              )
+            })}
           </DropdownMenuContent>
         </DropdownMenu>
 

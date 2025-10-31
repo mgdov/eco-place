@@ -1,10 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { PollutionType, ReportSource } from "@/types/report"
 import { pollutionTypeConfig, sourceConfig } from "@/lib/pollution-types"
+import { fetchCategories, type Category } from "@/lib/api/categories"
 import { useLanguage } from "@/contexts/language-context"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -20,12 +22,40 @@ interface ReportFiltersProps {
     pollutionTypes: PollutionType[]
     sources: ReportSource[]
   }) => void
+  onCategoryChange?: (categoryId: string | undefined) => void
 }
 
-export function ReportFilters({ onFilterChange }: ReportFiltersProps) {
+export function ReportFilters({ onFilterChange, onCategoryChange }: ReportFiltersProps) {
   const { t } = useLanguage()
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loadingCategories, setLoadingCategories] = useState(true)
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(undefined)
   const [selectedTypes, setSelectedTypes] = useState<PollutionType[]>([])
   const [selectedSources, setSelectedSources] = useState<ReportSource[]>([])
+
+  useEffect(() => {
+    loadCategories()
+  }, [])
+
+  const loadCategories = async () => {
+    setLoadingCategories(true)
+    try {
+      const data = await fetchCategories()
+      setCategories(data)
+    } catch (error) {
+      console.error("Не удалось загрузить категории:", error)
+      // При ошибке используем пустой массив, fallback к статическим категориям
+      setCategories([])
+    } finally {
+      setLoadingCategories(false)
+    }
+  }
+
+  const toggleCategory = (categoryId: string) => {
+    const newCategoryId = selectedCategoryId === categoryId ? undefined : categoryId
+    setSelectedCategoryId(newCategoryId)
+    onCategoryChange?.(newCategoryId)
+  }
 
   const toggleType = (type: PollutionType) => {
     const newTypes = selectedTypes.includes(type) ? selectedTypes.filter((t) => t !== type) : [...selectedTypes, type]
@@ -44,10 +74,12 @@ export function ReportFilters({ onFilterChange }: ReportFiltersProps) {
   const clearFilters = () => {
     setSelectedTypes([])
     setSelectedSources([])
+    setSelectedCategoryId(undefined)
     onFilterChange({ pollutionTypes: [], sources: [] })
+    onCategoryChange?.(undefined)
   }
 
-  const hasActiveFilters = selectedTypes.length > 0 || selectedSources.length > 0
+  const hasActiveFilters = selectedTypes.length > 0 || selectedSources.length > 0 || selectedCategoryId !== undefined
 
   return (
     <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 space-y-4 shadow-card">
@@ -75,12 +107,13 @@ export function ReportFilters({ onFilterChange }: ReportFiltersProps) {
             <Button
               variant="outline"
               className="w-full sm:flex-1 justify-between font-semibold"
+              disabled={loadingCategories}
             >
               <span className="flex items-center gap-2">
                 🏷️ {t.pollutionType}
-                {selectedTypes.length > 0 && (
+                {selectedCategoryId && (
                   <span className="ml-1 px-2 py-0.5 bg-primary text-primary-foreground rounded-full text-xs">
-                    {selectedTypes.length}
+                    1
                   </span>
                 )}
               </span>
@@ -90,19 +123,38 @@ export function ReportFilters({ onFilterChange }: ReportFiltersProps) {
           <DropdownMenuContent className="w-56" align="start">
             <DropdownMenuLabel>{t.pollutionType}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {(Object.keys(pollutionTypeConfig) as PollutionType[]).map((type) => {
-              const config = pollutionTypeConfig[type]
-              return (
+            {loadingCategories ? (
+              <div className="p-2 space-y-2">
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+              </div>
+            ) : categories.length > 0 ? (
+              categories.map((category) => (
                 <DropdownMenuCheckboxItem
-                  key={type}
-                  checked={selectedTypes.includes(type)}
-                  onCheckedChange={() => toggleType(type)}
+                  key={category._id}
+                  checked={selectedCategoryId === category._id}
+                  onCheckedChange={() => toggleCategory(category._id)}
                 >
-                  <span className="mr-2">{config.icon}</span>
-                  {t.pollutionTypes[type]}
+                  {category.name}
                 </DropdownMenuCheckboxItem>
-              )
-            })}
+              ))
+            ) : (
+              (Object.keys(pollutionTypeConfig) as PollutionType[]).map((type) => {
+                const config = pollutionTypeConfig[type]
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={type}
+                    checked={selectedTypes.includes(type)}
+                    onCheckedChange={() => toggleType(type)}
+                  >
+                    <span className="mr-2">{config.icon}</span>
+                    {t.pollutionTypes[type]}
+                  </DropdownMenuCheckboxItem>
+                )
+              })
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
 

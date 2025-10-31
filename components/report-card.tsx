@@ -14,8 +14,8 @@ interface ReportCardProps {
 
 export function ReportCard({ report, onStatusChange }: ReportCardProps) {
   const { t } = useLanguage()
-  const pollutionConfig = pollutionTypeConfig[report.pollutionType]
-  const sourceInfo = sourceConfig[report.source]
+  const pollutionConfig = pollutionTypeConfig[report.pollutionType] ?? pollutionTypeConfig["other"]
+  const sourceInfo = sourceConfig[report.source] ?? sourceConfig["mobile-app"]
 
   const handleTakeAction = () => {
     if (report.status === "new") {
@@ -53,7 +53,7 @@ export function ReportCard({ report, onStatusChange }: ReportCardProps) {
             <span className="mx-1">•</span>
             <span className="flex items-center gap-1">
               {sourceInfo.icon}
-              <span className="hidden xs:inline">{t.sources[report.source]}</span>
+              <span className="hidden xs:inline">{report.from}</span>
             </span>
           </div>
         </div>
@@ -61,6 +61,13 @@ export function ReportCard({ report, onStatusChange }: ReportCardProps) {
 
       {/* Content - Flexible with fixed structure */}
       <div className="flex-1 flex flex-col p-4">
+        {/* Title - if available */}
+        {report.title && (
+          <h3 className="text-base font-bold text-foreground mb-2 line-clamp-1">
+            {report.title}
+          </h3>
+        )}
+
         {/* Description - Fixed height with clamp */}
         <div className="h-11 mb-3">
           {report.description && (

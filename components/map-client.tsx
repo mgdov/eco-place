@@ -63,8 +63,8 @@ export default function MapClient({ reports }: MapClientProps) {
                 />
 
                 {reports.map((report) => {
-                    const pollutionConfig = pollutionTypeConfig[report.pollutionType]
-                    const statusInfo = statusConfig[report.status]
+                    const pollutionConfig = pollutionTypeConfig[report.pollutionType] ?? pollutionTypeConfig["other"]
+                    const statusInfo = statusConfig[report.status] ?? statusConfig["new"]
 
                     return (
                         <Marker

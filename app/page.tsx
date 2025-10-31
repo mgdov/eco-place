@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import type { PollutionReport, PollutionType, ReportStatus, ReportSource } from "@/types/report"
-import { fetchReports, updateReportStatus } from "@/lib/mock-data"
+import type { PollutionReport, PollutionType, ReportSource } from "@/types/report"
+import { fetchTasks, updateTaskStatus } from "@/lib/api/tasks"
+import type { Task } from "@/lib/api/tasks"
 import { ReportCard } from "@/components/report-card"
 import { ReportFilters } from "@/components/report-filters"
 import { StatsOverview } from "@/components/stats-overview"
@@ -10,6 +11,7 @@ import { ReportsMap } from "@/components/reports-map"
 import { LanguageSelector } from "@/components/language-selector"
 import { useLanguage } from "@/contexts/language-context"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function DashboardPage() {
   const { t } = useLanguage()
@@ -17,6 +19,7 @@ export default function DashboardPage() {
   const [filteredReports, setFilteredReports] = useState<PollutionReport[]>([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<"list" | "map">("list")
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(undefined)
   const [filters, setFilters] = useState<{
     pollutionTypes: PollutionType[]
     sources: ReportSource[]
@@ -25,9 +28,10 @@ export default function DashboardPage() {
     sources: [],
   })
 
+  // Загружаем задачи при монтировании или изменении фильтра по категории
   useEffect(() => {
     loadReports()
-  }, [])
+  }, [selectedCategoryId])
 
   useEffect(() => {
     applyFilters()
@@ -36,12 +40,87 @@ export default function DashboardPage() {
   const loadReports = async () => {
     setLoading(true)
     try {
-      const data = await fetchReports()
-      setReports(data)
+      const tasks = await fetchTasks(selectedCategoryId)
+      // Конвертируем Task в PollutionReport
+      const convertedReports: PollutionReport[] = tasks.map((task) => convertTaskToReport(task))
+      setReports(convertedReports)
     } catch (error) {
       console.error("Ошибка загрузки отчетов:", error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const convertTaskToReport = (task: Task): PollutionReport => {
+    // Получаем первую категорию или используем "other"
+    const categoryName = task.categories?.[0]?.name || "❓ Другое"
+
+    // Маппинг названий категорий на типы загрязнений
+    const mapCategoryToPollutionType = (name: string): PollutionType => {
+      const lowerName = name.toLowerCase()
+
+      if (lowerName.includes("биомусор") || lowerName.includes("тюлен") || lowerName.includes("медуз")) {
+        return "bio-waste"
+      }
+      if (lowerName.includes("пластик")) {
+        return "plastic"
+      }
+      if (lowerName.includes("стекло")) {
+        return "glass"
+      }
+      if (lowerName.includes("нефть") || lowerName.includes("мазут")) {
+        return "oil"
+      }
+      if (lowerName.includes("бытов") || lowerName.includes("мусор")) {
+        return "human-trash"
+      }
+      if (lowerName.includes("водоросл")) {
+        return "seaweed"
+      }
+
+      return "other"
+    }
+
+    const pollutionType = mapCategoryToPollutionType(categoryName)
+
+    // Берем первое фото из media или используем placeholder
+    const photoUrl = task.media?.[0] || "/placeholder.svg"
+
+    // Определяем источник из параметра from
+    const mapFromToSource = (from?: string): ReportSource => {
+      if (!from) {
+        return "mobile-app" // По умолчанию, если from отсутствует
+      }
+
+      const lowerFrom = from.toLowerCase()
+
+      // Проверяем на русском и английском
+      if (lowerFrom.includes("телеграм") || lowerFrom.includes("telegram") || lowerFrom.includes("бот") || lowerFrom.includes("bot")) {
+        return "telegram-bot"
+      }
+
+      if (lowerFrom.includes("mobile") || lowerFrom.includes("app") || lowerFrom.includes("мобильн") || lowerFrom.includes("приложени")) {
+        return "mobile-app"
+      }
+
+      return "mobile-app" // По умолчанию для неизвестных значений
+    }
+
+    return {
+      id: task._id,
+      title: task.title,
+      pollutionType: pollutionType,
+      photoUrl: photoUrl,
+      coordinates: task.location
+        ? { latitude: task.location.latitude, longitude: task.location.longtitude }
+        : { latitude: 0, longitude: 0 },
+      source: mapFromToSource(task.from),
+      status: (task.isCompleted ? "completed" : "new") as "new" | "completed",
+      description: task.description,
+      from: task.from || "Мобильное приложение",
+      reportedAt: task.createdAt ? new Date(task.createdAt) : new Date(),
+      reportedBy: task.author?.username || `User ${task.author?.telegramId || "Unknown"}`,
+      completedAt: task.isCompleted && task.updatedAt ? new Date(task.updatedAt) : undefined,
     }
   }
 
@@ -59,9 +138,10 @@ export default function DashboardPage() {
     setFilteredReports(filtered)
   }
 
-  const handleStatusChange = async (reportId: string, newStatus: ReportStatus) => {
+  const handleStatusChange = async (reportId: string, newStatus: "new" | "completed") => {
     try {
-      await updateReportStatus(reportId, newStatus)
+      const isCompleted = newStatus === "completed"
+      await updateTaskStatus(reportId, isCompleted)
 
       setReports((prevReports) =>
         prevReports.map((report) =>
@@ -77,6 +157,10 @@ export default function DashboardPage() {
 
   const handleFilterChange = (newFilters: typeof filters) => {
     setFilters(newFilters)
+  }
+
+  const handleCategoryChange = (categoryId: string | undefined) => {
+    setSelectedCategoryId(categoryId)
   }
 
   if (loading) {
@@ -129,7 +213,7 @@ export default function DashboardPage() {
 
           {/* Filters */}
           <section>
-            <ReportFilters onFilterChange={handleFilterChange} />
+            <ReportFilters onFilterChange={handleFilterChange} onCategoryChange={handleCategoryChange} />
           </section>
 
           {/* Reports List */}

@@ -27,12 +27,14 @@ export interface Coordinates {
 // Основная структура отчета о загрязнении
 export interface PollutionReport {
   id: string
+  title?: string
   pollutionType: PollutionType
   photoUrl: string
   coordinates: Coordinates
   source: ReportSource
   status: ReportStatus
   description?: string
+  from: string;
   reportedAt: Date
   reportedBy?: string // ID пользователя или имя
   completedAt?: Date

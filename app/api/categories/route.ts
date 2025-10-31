@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-const API_BASE_URL = "http://192.168.1.79:8081"
+const API_BASE_URL = "http://176.88.248.139:8081"
 
 export async function GET() {
     try {

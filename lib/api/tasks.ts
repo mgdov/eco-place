@@ -72,16 +72,31 @@ export async function fetchTasks(categoryId?: string): Promise<Task[]> {
 
 export async function updateTaskStatus(taskId: string, isCompleted: boolean): Promise<void> {
     try {
-        const response = await fetch(`${API_URL}/${taskId}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ isCompleted }),
-        })
+        // Если задача отмечается выполненной, используем специальный endpoint
+        if (isCompleted) {
+            const response = await fetch(`${API_URL}/${taskId}/complete`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
 
-        if (!response.ok) {
-            throw new Error(`Failed to update task status: ${response.status}`)
+            if (!response.ok) {
+                throw new Error(`Failed to mark task as completed: ${response.status}`)
+            }
+        } else {
+            // Для других изменений статуса используем обычный PATCH
+            const response = await fetch(`${API_URL}/${taskId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ isCompleted }),
+            })
+
+            if (!response.ok) {
+                throw new Error(`Failed to update task status: ${response.status}`)
+            }
         }
     } catch (error) {
         console.error("Ошибка при обновлении статуса задачи:", error)

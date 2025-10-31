@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import type { PollutionReport, PollutionType, ReportSource } from "@/types/report"
 import { fetchTasks, updateTaskStatus } from "@/lib/api/tasks"
 import type { Task } from "@/lib/api/tasks"
@@ -16,7 +16,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 export default function DashboardPage() {
   const { t } = useLanguage()
   const [reports, setReports] = useState<PollutionReport[]>([])
-  const [filteredReports, setFilteredReports] = useState<PollutionReport[]>([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<"list" | "map">("list")
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(undefined)
@@ -33,8 +32,22 @@ export default function DashboardPage() {
     loadReports()
   }, [selectedCategoryId])
 
-  useEffect(() => {
-    applyFilters()
+  // Мемоизированная фильтрация для оптимизации
+  const filteredReports = useMemo(() => {
+    let filtered = [...reports]
+
+    if (filters.pollutionTypes.length > 0) {
+      filtered = filtered.filter((r) => filters.pollutionTypes.includes(r.pollutionType))
+    }
+
+    if (filters.sources.length > 0) {
+      filtered = filtered.filter((r) => filters.sources.includes(r.source))
+    }
+
+    // Сортировка по дате (новые первые)
+    filtered.sort((a, b) => b.reportedAt.getTime() - a.reportedAt.getTime())
+
+    return filtered
   }, [reports, filters])
 
   const loadReports = async () => {
@@ -124,20 +137,6 @@ export default function DashboardPage() {
     }
   }
 
-  const applyFilters = () => {
-    let filtered = [...reports]
-
-    if (filters.pollutionTypes.length > 0) {
-      filtered = filtered.filter((r) => filters.pollutionTypes.includes(r.pollutionType))
-    }
-
-    if (filters.sources.length > 0) {
-      filtered = filtered.filter((r) => filters.sources.includes(r.source))
-    }
-
-    setFilteredReports(filtered)
-  }
-
   const handleStatusChange = async (reportId: string, newStatus: "new" | "completed") => {
     try {
       const isCompleted = newStatus === "completed"
@@ -213,7 +212,10 @@ export default function DashboardPage() {
 
           {/* Filters */}
           <section>
-            <ReportFilters onFilterChange={handleFilterChange} onCategoryChange={handleCategoryChange} />
+            <ReportFilters
+              onFilterChange={handleFilterChange}
+              onCategoryChange={handleCategoryChange}
+            />
           </section>
 
           {/* Reports List */}

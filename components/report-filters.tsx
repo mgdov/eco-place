@@ -14,8 +14,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuItem,
 } from "@/components/ui/dropdown-menu"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, Check } from "lucide-react"
 
 interface ReportFiltersProps {
   onFilterChange: (filters: {
@@ -131,27 +132,41 @@ export function ReportFilters({ onFilterChange, onCategoryChange }: ReportFilter
                 <Skeleton className="h-8 w-full" />
               </div>
             ) : categories.length > 0 ? (
-              categories.map((category) => (
-                <DropdownMenuCheckboxItem
-                  key={category._id}
-                  checked={selectedCategoryId === category._id}
-                  onCheckedChange={() => toggleCategory(category._id)}
-                >
-                  {category.name}
-                </DropdownMenuCheckboxItem>
-              ))
+              categories.map((category) => {
+                const isSelected = selectedCategoryId === category._id
+                return (
+                  <DropdownMenuItem
+                    key={category._id}
+                    onClick={() => toggleCategory(category._id)}
+                    className="cursor-pointer"
+                  >
+                    <div className="flex items-center w-full">
+                      <div className="w-4 h-4 mr-2 flex items-center justify-center">
+                        {isSelected && <Check className="w-4 h-4" />}
+                      </div>
+                      <span>{category.name}</span>
+                    </div>
+                  </DropdownMenuItem>
+                )
+              })
             ) : (
               (Object.keys(pollutionTypeConfig) as PollutionType[]).map((type) => {
                 const config = pollutionTypeConfig[type]
+                const isSelected = selectedTypes.includes(type)
                 return (
-                  <DropdownMenuCheckboxItem
+                  <DropdownMenuItem
                     key={type}
-                    checked={selectedTypes.includes(type)}
-                    onCheckedChange={() => toggleType(type)}
+                    onClick={() => toggleType(type)}
+                    className="cursor-pointer"
                   >
-                    <span className="mr-2">{config.icon}</span>
-                    {t.pollutionTypes[type]}
-                  </DropdownMenuCheckboxItem>
+                    <div className="flex items-center w-full">
+                      <div className="w-4 h-4 mr-2 flex items-center justify-center">
+                        {isSelected && <Check className="w-4 h-4" />}
+                      </div>
+                      <span className="mr-2">{config.icon}</span>
+                      <span>{t.pollutionTypes[type]}</span>
+                    </div>
+                  </DropdownMenuItem>
                 )
               })
             )}
